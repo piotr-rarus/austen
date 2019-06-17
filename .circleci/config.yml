@@ -1,0 +1,29 @@
+version: 0.1.0
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.7.3
+    working_directory: ~/austen
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
+      - run:
+          name: Restoring environment
+          command: |
+            python3 -m venv env
+            . env/bin/activate
+            pip install -r requirements.txt
+      - save_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
+          paths:
+            - "env"
+      - run:
+          name: Running tests
+          command: |
+            . env/bin/activate
+            python -m pytest ./tests/
+            python -m pytest --cov=austen ./tests/
+      - store_artifacts:
+          path: test-reports/
+          destination: python_app
