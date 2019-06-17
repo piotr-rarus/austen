@@ -8,18 +8,21 @@ merge it's telemetry dictionary up to the parent.
 """
 
 from __future__ import annotations
+
 import collections
-from datetime import datetime
 import json
 import os
-import joblib
+from datetime import datetime
 from timeit import default_timer as timer
 from typing import Dict
 
-from pandas import DataFrame
+import joblib
+import matplotlib
+matplotlib.use('agg')
 from matplotlib.figure import Figure
-from skimage.io import imsave
+from pandas import DataFrame
 from skimage import img_as_ubyte
+from skimage.io import imsave
 
 from .encoders import NumpyEncoder
 
@@ -153,7 +156,7 @@ class Logger:
         for key, value in entries:
             self.add_entry(key, value)
 
-    def log_func(self, func, args=[], kwargs={}):
+    def log_func(self, func, args: list = None, kwargs: dict = None):
         """
         Wrapper for a function call. Calls function, logs
         its parameters and result in the log dictionary.
@@ -172,6 +175,12 @@ class Logger:
         any
             Results from function call.
         """
+
+        if args is None:
+            args = []
+
+        if kwargs is None:
+            kwargs = {}
 
         start = timer()
         result = func(*args, **kwargs)
