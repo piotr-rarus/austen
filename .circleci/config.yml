@@ -21,14 +21,17 @@ jobs:
       - run:
           name: Tests
           command: |
+            . env/bin/activate
             python -m pytest ./tests/
       - run:
           name: Coverage
           command: |
+            . env/bin/activate
             python -m pytest --cov=austen ./tests/
       - run:
           name: Linter
           command: |
+            . env/bin/activate
             python -m flake8 ./austen/
   deploy:
     docker:
@@ -56,6 +59,7 @@ jobs:
       - run:
         name: Upload to pypi
         command: |
+          . env/bin/activate
           twine upload dist/*
 workflows:
   version: 2
