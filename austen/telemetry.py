@@ -68,26 +68,11 @@ class Logger:
         self.add_entry('dt', timer() - self.__START)
 
         if self.__PARENT:
-            self.close()
-        else:
-            # TODO: why dumping log so implicitly?
-            self.save_json(self.__LOG, 'telemetry')
-
-    def close(self) -> Logger:
-        """
-        Merges the log dict up to parent logger, when one's available.
-
-        Returns
-        -------
-        Logger
-            Parent logger or self, when there's none parent logger.
-        """
-
-        if self.__PARENT:
             self.__PARENT.__merge(self.__SCOPE, self.__LOG)
             return self.__PARENT
         else:
-            return self
+            # TODO: why dumping log so implicitly?
+            self.save_json(self.__LOG, 'telemetry')
 
     def __merge(self, scope, log):
         if scope:
