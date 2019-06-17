@@ -17,8 +17,6 @@ from timeit import default_timer as timer
 from typing import Dict
 
 import joblib
-import matplotlib
-matplotlib.use('agg')
 from matplotlib.figure import Figure
 from pandas import DataFrame
 from skimage import img_as_ubyte
