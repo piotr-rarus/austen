@@ -1,1 +1,2 @@
+# flake8: noqa
 from .numpy import NumpyEncoder

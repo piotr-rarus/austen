@@ -8,18 +8,18 @@ merge it's telemetry dictionary up to the parent.
 """
 
 from __future__ import annotations
-import collections
-from datetime import datetime
+
 import json
 import os
-import joblib
+from datetime import datetime
 from timeit import default_timer as timer
 from typing import Dict
 
-from pandas import DataFrame
+import joblib
 from matplotlib.figure import Figure
-from skimage.io import imsave
+from pandas import DataFrame
 from skimage import img_as_ubyte
+from skimage.io import imsave
 
 from .encoders import NumpyEncoder
 
@@ -47,7 +47,7 @@ class Logger:
         self.__SCOPE = scope
         self.__PARENT = parent
 
-        self.__LOG = collections.OrderedDict()
+        self.__LOG = {}
         self.__START = timer()
         self.__TIMESTAMP = datetime.today()
 
@@ -68,26 +68,11 @@ class Logger:
         self.add_entry('dt', timer() - self.__START)
 
         if self.__PARENT:
-            self.close()
-        else:
-            # TODO: why dumping log so implicitly?
-            self.save_json(self.__LOG, 'telemetry')
-
-    def close(self) -> Logger:
-        """
-        Merges the log dict up to parent logger, when one's available.
-
-        Returns
-        -------
-        Logger
-            Parent logger or self, when there's none parent logger.
-        """
-
-        if self.__PARENT:
             self.__PARENT.__merge(self.__SCOPE, self.__LOG)
             return self.__PARENT
         else:
-            return self
+            # TODO: why dumping log so implicitly?
+            self.save_json(self.__LOG, 'telemetry')
 
     def __merge(self, scope, log):
         if scope:
@@ -168,7 +153,7 @@ class Logger:
         for key, value in entries:
             self.add_entry(key, value)
 
-    def log_func(self, func, args=[], kwargs={}):
+    def log_func(self, func, args: list = None, kwargs: dict = None):
         """
         Wrapper for a function call. Calls function, logs
         its parameters and result in the log dictionary.
@@ -187,6 +172,12 @@ class Logger:
         any
             Results from function call.
         """
+
+        if args is None:
+            args = []
+
+        if kwargs is None:
+            kwargs = {}
 
         start = timer()
         result = func(*args, **kwargs)
