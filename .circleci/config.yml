@@ -93,15 +93,12 @@ workflows:
   prod:
     jobs:
       - build
-      - hold:
-          type: approval
+      - deploy:
           requires:
             - build
-      - deploy:
           filters:
             tags:
               only: /[0-9]+(\.[0-9]+)*/
             branches:
               ignore: /.*/
-          requires:
-            - hold
+
