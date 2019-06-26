@@ -66,6 +66,13 @@ jobs:
             - "env"
 
       - run:
+          name: init .pyirc
+          command: |
+            echo -e "[pypi]" >> ~/.pyirc
+            echo -e "username = rarus" >> ~/.pyirc
+            echo -e "password = $PYPI_PASSWORD" >> ~/.pyirc
+
+      - run:
           name: Create packages
           command: |
             rm -rf dist/*
@@ -92,8 +99,9 @@ workflows:
             - build
       - deploy:
           filters:
+            tags:
+              only: /[0-9]+(\.[0-9]+)*/
             branches:
-              only:
-                - /release/.*
+              ignore: /.*/
           requires:
             - hold
