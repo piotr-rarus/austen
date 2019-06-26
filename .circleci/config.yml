@@ -54,11 +54,11 @@ jobs:
           paths:
             - "env"
       - run:
-          name: init .pyirc
+          name: init .pypirc
           command: |
-            echo -e "[pypi]" >> ~/.pyirc
-            echo -e "username = rarus" >> ~/.pyirc
-            echo -e "password = $PYPI_PASSWORD" >> ~/.pyirc
+            echo -e "[pypi]" >> ~/.pypirc
+            echo -e "username = rarus" >> ~/.pypirc
+            echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
       - run:
           name: Create packages
           command: |
