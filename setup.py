@@ -25,9 +25,7 @@ setuptools.setup(
         'matplotlib',
         'seaborn',
         'scikit-image',
-        'joblib',
-        'pytest',
-        'pytest-cov'
+        'joblib'
     ],
     classifiers=[
         'Programming Language :: Python :: 3',
