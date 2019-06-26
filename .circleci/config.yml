@@ -51,16 +51,16 @@ jobs:
           paths:
             - "env"
       - run:
-        name: Create packages
-        command: |
-          rm -rf dist/*
-          python setup.py sdist
-          python setup.py bdist_wheel
+          name: Create packages
+          command: |
+            rm -rf dist/*
+            python setup.py sdist
+            python setup.py bdist_wheel
       - run:
-        name: Upload to pypi
-        command: |
-          . env/bin/activate
-          twine upload dist/*
+          name: Upload to pypi
+          command: |
+            . env/bin/activate
+            twine upload dist/*
 workflows:
   version: 2
   dev:

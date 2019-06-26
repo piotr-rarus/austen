@@ -9,7 +9,6 @@ merge it's telemetry dictionary up to the parent.
 
 from __future__ import annotations
 
-import collections
 import json
 import os
 from datetime import datetime
@@ -48,7 +47,7 @@ class Logger:
         self.__SCOPE = scope
         self.__PARENT = parent
 
-        self.__LOG = collections.OrderedDict()
+        self.__LOG = {}
         self.__START = timer()
         self.__TIMESTAMP = datetime.today()
 
