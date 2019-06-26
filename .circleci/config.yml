@@ -3,16 +3,11 @@ jobs:
   build:
     docker:
       - image: circleci/python:3.7.3
-
     working_directory: ~/austen
-
     steps:
-
       - checkout
-
       - restore_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
-
       - run:
           name: Restoring environment
           command: |
@@ -20,38 +15,31 @@ jobs:
             . env/bin/activate
             pip install -r requirements.txt
             pip install flake8
-
       - save_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
           paths:
             - "env"
-
       - run:
           name: Linter
           command: |
             . env/bin/activate
             python -m flake8 ./austen/
-
       - run:
           name: Tests
           command: |
             . env/bin/activate
-            python -m pytest ./tests/
-      
+            python -m pytest ./tests/    
       - run:
           name: Coverage
           command: |
             . env/bin/activate
             python -m pytest --cov=austen ./tests/
-
   deploy:
     docker:
       - image: circleci/python:3.7.3
     steps:
-
       - restore_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
-
       - run:
           name: Restoring environment
           command: |
@@ -59,32 +47,27 @@ jobs:
             . env/bin/activate
             pip install -r requirements.txt
             pip install twine
-
       - save_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
           paths:
             - "env"
-
       - run:
           name: init .pyirc
           command: |
             echo -e "[pypi]" >> ~/.pyirc
             echo -e "username = rarus" >> ~/.pyirc
             echo -e "password = $PYPI_PASSWORD" >> ~/.pyirc
-
       - run:
           name: Create packages
           command: |
             rm -rf dist/*
             python setup.py sdist
             python setup.py bdist_wheel
-
       - run:
           name: Upload to pypi
           command: |
             . env/bin/activate
             twine upload dist/*
-
 workflows:
   version: 2
   dev:
@@ -99,6 +82,4 @@ workflows:
           filters:
             tags:
               only: /[0-9]+(\.[0-9]+)*/
-            branches:
-              ignore: /.*/
 
