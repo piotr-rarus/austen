@@ -28,12 +28,17 @@ jobs:
           name: Tests
           command: |
             . env/bin/activate
-            python -m pytest ./tests/    
+            mkdir test-reports
+            python -m pytest ./tests/ --junitxml=test-reports/junit.xml    
       - run:
           name: Coverage
           command: |
             . env/bin/activate
             python -m pytest --cov=austen ./tests/
+      - store_test_results:
+          path: test-reports
+      - store_artifacts:
+          path: test-reports
   deploy:
     docker:
       - image: circleci/python:3.7.3
