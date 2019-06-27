@@ -12,7 +12,7 @@ setuptools.setup(
     long_description_content_type='text/markdown',
     url='https://github.com/piotr-rarus/austen',
     license='MIT',
-    version='0.1.0',
+    version='0.1.6',
     packages=setuptools.find_packages(
         exclude=[
             "tests",
@@ -29,7 +29,7 @@ setuptools.setup(
     ],
     classifiers=[
         'Programming Language :: Python :: 3',
-        'License :: MIT',
+        'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent'
     ],
     author='Piotr Rarus',
