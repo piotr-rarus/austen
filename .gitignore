@@ -108,3 +108,5 @@ env/
 logs/
 
 cov\.xml
+
+junit\.xml
