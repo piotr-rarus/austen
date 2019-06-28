@@ -1,12 +1,16 @@
+# flake8: noqa
+from pathlib import Path
+
 import matplotlib
 matplotlib.use('Agg')
-# flake8: noqa
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 from skimage.io import imread
 
 from austen import Logger
+
 
 sns.set()
 logs_dir = 'logs'
@@ -49,7 +53,7 @@ def test_save_obj():
 
 def test_save_fig():
     with Logger(logs_dir) as logger:
-        with open('tests/people.csv') as csv:
+        with open(Path('tests/people.csv')) as csv:
             frame = pd.read_csv(csv)
 
             plt.figure(clear=True)
@@ -68,12 +72,12 @@ def test_save_fig():
 
 def test_save_csv():
     with Logger(logs_dir) as logger:
-        with open('tests/people.csv') as csv:
+        with open(Path('tests/people.csv')) as csv:
             frame = pd.read_csv(csv)
             logger.save_csv(frame, 'people')
 
 
 def test_save_image():
     with Logger(logs_dir) as logger:
-        image = imread('tests/astronaut.png')
+        image = imread(Path('tests/astronaut.png'))
         logger.save_image(image, 'astronaut')
