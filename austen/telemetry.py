@@ -10,10 +10,10 @@ merge it's telemetry dictionary up to the parent.
 from __future__ import annotations
 
 import json
-import os
 from datetime import datetime
 from timeit import default_timer as timer
 from typing import Dict
+from pathlib import Path
 
 import joblib
 from matplotlib.figure import Figure
@@ -31,7 +31,7 @@ class Logger:
 
     Parameters
     ----------
-    output : str
+    output : Path
         Initial base directory for logger output.
     scope : str, optional
         Current scope's name.
@@ -41,7 +41,7 @@ class Logger:
 
     """
 
-    def __init__(self, output: str, scope='', parent=None):
+    def __init__(self, output: Path, scope='', parent=None):
 
         self.OUTPUT = output
         self.__SCOPE = scope
@@ -54,10 +54,9 @@ class Logger:
         self.__step_counter = 1
 
         if self.__SCOPE:
-            self.OUTPUT = os.path.join(self.OUTPUT, self.__SCOPE)
+            self.OUTPUT = self.OUTPUT.joinpath(self.__SCOPE)
 
-        if not os.path.isdir(self.OUTPUT):
-            os.makedirs(self.OUTPUT)
+        self.OUTPUT.mkdir(parents=True, exist_ok=True)
 
     def __enter__(self):
         return self
@@ -210,7 +209,7 @@ class Logger:
             filepath += self.__step_counter_to_string() + '_'
 
         filepath += name + '.joblib'
-        path = os.path.join(self.OUTPUT, filepath)
+        path = self.OUTPUT.joinpath(filepath)
 
         joblib.dump(obj, path)
 
@@ -232,7 +231,7 @@ class Logger:
             filepath += self.__step_counter_to_string() + '_'
 
         filepath += name + '.png'
-        path = os.path.join(self.OUTPUT, filepath)
+        path = self.OUTPUT.joinpath(filepath)
 
         figure.savefig(path)
 
@@ -253,7 +252,7 @@ class Logger:
             filepath += self.__step_counter_to_string() + '_'
 
         filepath += name + '.csv'
-        path = os.path.join(self.OUTPUT, filepath)
+        path = self.OUTPUT.joinpath(filepath)
 
         data.to_csv(path)
 
@@ -274,7 +273,7 @@ class Logger:
             filepath += self.__step_counter_to_string() + '_'
 
         filepath += name + '.json'
-        path = os.path.join(self.OUTPUT, filepath)
+        path = self.OUTPUT.joinpath(filepath)
 
         with open(path, 'w') as file:
             json.dump(dictionary, file, cls=NumpyEncoder)
@@ -296,7 +295,7 @@ class Logger:
             filepath += self.__step_counter_to_string() + '_'
 
         filepath += name + '.tiff'
-        path = os.path.join(self.OUTPUT, filepath)
+        path = self.OUTPUT.joinpath(filepath)
 
         image = img_as_ubyte(image)
         imsave(path, image)
