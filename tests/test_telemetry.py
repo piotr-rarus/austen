@@ -13,7 +13,7 @@ from austen import Logger
 
 
 sns.set()
-logs_dir = 'logs'
+logs_dir = Path('logs')
 
 
 def test_logger():
