@@ -118,14 +118,9 @@ workflows:
             tags:
               only: /[0-9]+(\.[0-9]+)*$/
 
-      - hold:
-          type: approval
-          requires:
-            - build
-
       - deploy:
           requires:
-            - hold
+            - build
           filters:
             branches:
               ignore: /.*/
