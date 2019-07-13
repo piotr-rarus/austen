@@ -120,7 +120,7 @@ workflows:
 
       - deploy:
           requires:
-            - hold
+            - build
           filters:
             branches:
               ignore: /.*/
