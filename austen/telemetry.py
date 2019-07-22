@@ -20,6 +20,7 @@ from matplotlib.figure import Figure
 from pandas import DataFrame
 from skimage import img_as_ubyte
 from skimage.io import imsave
+from shutil import rmtree
 
 from .encoders import NumpyEncoder
 
@@ -38,10 +39,11 @@ class Logger:
     parent : Logger, optional
         Parent logger denotes, where telemetry dictionary should
         be merged up to. (the default is None, meaning logger is the root)
-
+    clear_dir : bool, optional
+        Denotes whether specified log dir should be cleared upon start.
     """
 
-    def __init__(self, output: Path, scope='', parent=None):
+    def __init__(self, output: Path, scope='', parent=None, clear_dir=False):
 
         self.OUTPUT = output
         self.__SCOPE = scope
@@ -56,6 +58,9 @@ class Logger:
         if self.__SCOPE:
             self.OUTPUT = self.OUTPUT.joinpath(self.__SCOPE)
 
+        if clear_dir:
+            rmtree(str(self.OUTPUT), ignore_errors=True)
+
         self.OUTPUT.mkdir(parents=True, exist_ok=True)
 
     def __enter__(self):
@@ -68,7 +73,6 @@ class Logger:
 
         if self.__PARENT:
             self.__PARENT.__merge(self.__SCOPE, self.__LOG)
-            return self.__PARENT
         else:
             # TODO: why dumping log so implicitly?
             self.save_json(self.__LOG, 'telemetry')
@@ -94,7 +98,7 @@ class Logger:
     def __get_next_key(self, key):
         i = 1
         temp_key = key
-        while(temp_key in self.__LOG):
+        while temp_key in self.__LOG:
             temp_key = key + '_' + str(i)
             i += 1
 

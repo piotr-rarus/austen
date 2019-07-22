@@ -30,6 +30,12 @@ def test_logger():
         logger.add_entry('a', 3)
 
 
+def test_pre_clear():
+    with Logger(logs_dir, clear_dir=True) as logger:
+        image = imread(Path('tests/astronaut.png'))
+        logger.save_image(image, 'astronaut')
+
+
 def test_child():
     with Logger(logs_dir) as logger:
         logger.add_entry('foo', 'bar')
@@ -81,3 +87,4 @@ def test_save_image():
     with Logger(logs_dir) as logger:
         image = imread(Path('tests/astronaut.png'))
         logger.save_image(image, 'astronaut')
+
