@@ -12,7 +12,7 @@ setuptools.setup(
     long_description_content_type='text/markdown',
     url='https://github.com/piotr-rarus/austen',
     license='MIT',
-    version='0.1.9',
+    version='0.2.0',
     packages=setuptools.find_packages(
         exclude=[
             "tests",
