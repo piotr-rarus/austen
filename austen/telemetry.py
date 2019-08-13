@@ -282,7 +282,7 @@ class Logger:
         with open(path, 'w') as file:
             json.dump(dictionary, file, cls=NumpyEncoder)
 
-    def save_image(self, image, name: str, prefix_step=False):
+    def save_image(self, image, name: str, prefix_step=False, filetype='png'):
         """
         Dumps image onto hard drive.
         File will be logged under logger's scope.
@@ -298,7 +298,9 @@ class Logger:
         if prefix_step:
             filepath += self.__step_counter_to_string() + '_'
 
-        filepath += name + '.tiff'
+        filepath += name
+        filepath += '.' + filetype
+
         path = self.OUTPUT.joinpath(filepath)
 
         image = img_as_ubyte(image)
