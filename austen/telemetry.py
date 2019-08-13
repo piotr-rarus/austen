@@ -239,7 +239,13 @@ class Logger:
 
         figure.savefig(path)
 
-    def save_csv(self, data: DataFrame, name: str, prefix_step=False):
+    def save_csv(
+        self,
+        data: DataFrame,
+        name: str,
+        prefix_step=False,
+        index=False
+    ):
         """
         Dumps data frame to `.csv` file.
         File will be logged under logger's scope.
@@ -258,7 +264,7 @@ class Logger:
         filepath += name + '.csv'
         path = self.OUTPUT.joinpath(filepath)
 
-        data.to_csv(path)
+        data.to_csv(path, index=index)
 
     def save_json(self, dictionary: Dict, name: str, prefix_step=False):
         """
