@@ -244,7 +244,7 @@ class Logger:
         data: DataFrame,
         name: str,
         prefix_step=False,
-        index=False
+        index=True
     ):
         """
         Dumps data frame to `.csv` file.
