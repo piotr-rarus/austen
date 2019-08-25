@@ -27,6 +27,12 @@ setuptools.setup(
         'scikit-image',
         'joblib'
     ],
+    tests_require=[
+        'pytest',
+        'pytest-cov',
+        'flake8',
+        'pylint'
+    ],
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
