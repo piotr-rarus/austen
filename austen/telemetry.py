@@ -11,16 +11,17 @@ from __future__ import annotations
 
 import json
 from datetime import datetime
+from pathlib import Path
+from shutil import rmtree
 from timeit import default_timer as timer
 from typing import Dict
-from pathlib import Path
 
 import joblib
+import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from pandas import DataFrame
 from skimage import img_as_ubyte
 from skimage.io import imsave
-from shutil import rmtree
 
 from .encoders import NumpyEncoder
 
@@ -49,7 +50,7 @@ class Logger:
         self.__SCOPE = scope
         self.__PARENT = parent
 
-        self.__LOG = {}
+        self.__logs = {}
         self.__START = timer()
         self.__TIMESTAMP = datetime.today()
 
@@ -72,37 +73,52 @@ class Logger:
         self.add_entry('dt', timer() - self.__START)
 
         if self.__PARENT:
-            self.__PARENT.__merge(self.__SCOPE, self.__LOG)
+            self.__PARENT.__merge(self.__SCOPE, self.__logs)
         else:
             # TODO: why dumping log so implicitly?
-            self.save_json(self.__LOG, 'telemetry')
+            self.save_json(self.__logs, 'telemetry')
 
     def __merge(self, scope, log):
         if scope:
-            self.__LOG = {
-                **self.__LOG,
+            self.__logs = {
+                **self.__logs,
                 scope: log
             }
         else:
-            self.__LOG = {
-                **self.__LOG,
+            self.__logs = {
+                **self.__logs,
                 **log
             }
 
     def __step_counter_to_string(self):
+
+        step_counter = ''
+
         if self.__step_counter < 10:
-            return '0' + str(self.__step_counter)
-        else:
-            return str(self.__step_counter)
+            step_counter = '0'
+
+        step_counter += str(self.__step_counter)
+
+        return step_counter
 
     def __get_next_key(self, key):
         i = 1
         temp_key = key
-        while temp_key in self.__LOG:
-            temp_key = key + '_' + str(i)
+        while temp_key in self.__logs:
+            temp_key = key + '-' + str(i)
             i += 1
 
         return temp_key
+
+    def get_logs(self) -> Dict:
+        """
+        Returns
+        -------
+        Dict
+            Retrieves internal dictionary of log entries.
+        """
+
+        return self.__logs
 
     def get_child(self, scope) -> Logger:
         """
@@ -139,7 +155,7 @@ class Logger:
         """
 
         next_key = self.__get_next_key(key)
-        self.__LOG[next_key] = value
+        self.__logs[next_key] = value
 
     def add_entries(self, entries):
         """
@@ -210,7 +226,7 @@ class Logger:
         filepath = ''
 
         if prefix_step:
-            filepath += self.__step_counter_to_string() + '_'
+            filepath += self.__step_counter_to_string() + '-'
 
         filepath += name + '.joblib'
         path = self.OUTPUT.joinpath(filepath)
@@ -229,22 +245,26 @@ class Logger:
         name : str
         """
 
+        plt.figure(clear=True)
+
         filepath = ''
 
         if prefix_step:
-            filepath += self.__step_counter_to_string() + '_'
+            filepath += self.__step_counter_to_string() + '-'
 
         filepath += name + '.png'
         path = self.OUTPUT.joinpath(filepath)
 
         figure.savefig(path)
 
+        plt.close('all')
+
     def save_csv(
         self,
         data: DataFrame,
         name: str,
         prefix_step=False,
-        index=False
+        index=True
     ):
         """
         Dumps data frame to `.csv` file.
@@ -259,7 +279,7 @@ class Logger:
         filepath = ''
 
         if prefix_step:
-            filepath += self.__step_counter_to_string() + '_'
+            filepath += self.__step_counter_to_string() + '-'
 
         filepath += name + '.csv'
         path = self.OUTPUT.joinpath(filepath)
@@ -280,7 +300,7 @@ class Logger:
         filepath = ''
 
         if prefix_step:
-            filepath += self.__step_counter_to_string() + '_'
+            filepath += self.__step_counter_to_string() + '-'
 
         filepath += name + '.json'
         path = self.OUTPUT.joinpath(filepath)
@@ -302,7 +322,7 @@ class Logger:
         filepath = ''
 
         if prefix_step:
-            filepath += self.__step_counter_to_string() + '_'
+            filepath += self.__step_counter_to_string() + '-'
 
         filepath += name
         filepath += '.' + filetype
