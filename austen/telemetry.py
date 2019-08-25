@@ -91,10 +91,15 @@ class Logger:
             }
 
     def __step_counter_to_string(self):
+
+        step_counter = ''
+
         if self.__step_counter < 10:
-            return '0' + str(self.__step_counter)
-        else:
-            return str(self.__step_counter)
+            step_counter = '0'
+
+        step_counter += str(self.__step_counter)
+
+        return step_counter
 
     def __get_next_key(self, key):
         i = 1
