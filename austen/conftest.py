@@ -7,10 +7,9 @@ from numpy import ndarray
 from pytest import fixture
 from skimage.io import imread
 
-
-__ASTRONAUT_PNG_DIR = Path('austen/tests/astronaut.png')
-__PEOPLE_CSV_DIR = Path('austen/tests/people.csv')
 __LOGS_DIR = Path('logs')
+__ASTRONAUT_PNG_PATH = Path('austen/test/astronaut.png')
+__PEOPLE_CSV_PATH = Path('austen/test/people.csv')
 
 
 def __reset_dir(path: Path):
@@ -26,12 +25,12 @@ def logs_dir() -> Generator[Path, None, None]:
 
 @fixture(scope='session')
 def astronaut() -> ndarray:
-    astronaut = imread(__ASTRONAUT_PNG_DIR)
+    astronaut = imread(__ASTRONAUT_PNG_PATH)
     return astronaut
 
 
 @fixture(scope='session')
 def people() -> pd.DataFrame:
-    with open(__PEOPLE_CSV_DIR) as csv:
+    with open(__PEOPLE_CSV_PATH) as csv:
         people = pd.read_csv(csv)
         return people

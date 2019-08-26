@@ -5,8 +5,8 @@ Perfect for printing algorithms. Dumps into `json` file.
 
 ## Features
 
-Core idea behind `Austen` was to have algorithm call stack logged with exact arguments.These are stored in a dictionary and dumped into `json`.
-Additionaly `Austen` handles dumps of some additional file types. These include:
+Core idea behind `Austen` is to have algorithm call stack logged with exact arguments.These are stored in a dictionary and dumped into `json`.
+Additionally `Austen` handles dumps of some additional file types. These include:
 
 - plots
 - sheets
@@ -161,13 +161,6 @@ You can nest your loggers using `get_child` method. We recommend you wrap your l
 - once root logger is disposed, it'll dump all your telemetry in `json` file
 
 Another tip would be to write code in 'scope per branch' fashion - you do single method, where you use only single logger. You can pass parent logger with an argument.
-
-## Tests
-
-```shell
-cd [project-path]
-python -m pytest .\tests\
-```
 
 ## Author
 
