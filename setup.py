@@ -14,7 +14,7 @@ setuptools.setup(
 
     url='https://github.com/piotr-rarus/austen',
     license='MIT',
-    version='0.2.3',
+    version='0.2.4',
 
     long_description=long_description,
     long_description_content_type='text/markdown',
