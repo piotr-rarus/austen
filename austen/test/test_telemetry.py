@@ -3,7 +3,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-from numpy import ndarray
+import numpy as np
 
 from ..telemetry import Logger
 
@@ -106,7 +106,7 @@ def test_save_csv(logs_dir: Path, people: pd.DataFrame):
         assert people_path.exists()
 
 
-def test_save_image(logs_dir: Path, astronaut: ndarray):
+def test_save_image(logs_dir: Path, astronaut: np.ndarray):
     with Logger(logs_dir) as logger:
         logger.save_image(astronaut, 'astronaut')
 
@@ -116,4 +116,25 @@ def test_save_image(logs_dir: Path, astronaut: ndarray):
         logger.save_image(astronaut, 'astronaut', prefix_step=True)
 
         astronaut_path = logs_dir.joinpath('01-astronaut.png')
+        assert astronaut_path.exists()
+
+
+def test_save_gif(logs_dir: Path, astronaut: np.ndarray):
+    with Logger(logs_dir) as logger:
+        images = []
+        images.append(astronaut)
+
+        for i in range(19):
+            darker = images[i] * 0.9
+            darker = darker.astype(np.uint8)
+            images.append(darker)
+
+        logger.save_gif(images, 'astronaut')
+
+        astronaut_path = logs_dir.joinpath('astronaut.gif')
+        assert astronaut_path.exists()
+
+        logger.save_gif(images, 'astronaut', prefix_step=True)
+
+        astronaut_path = logs_dir.joinpath('01-astronaut.gif')
         assert astronaut_path.exists()
