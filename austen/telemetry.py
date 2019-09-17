@@ -14,7 +14,7 @@ from datetime import datetime
 from pathlib import Path
 from shutil import rmtree
 from timeit import default_timer as timer
-from typing import Dict, List
+from typing import Dict, List, Tuple, Any, Callable
 
 import joblib
 import matplotlib.pyplot as plt
@@ -38,7 +38,7 @@ class Logger:
     output : Path
         Initial base directory for logger output.
     scope : str, optional
-        Current scope's name.
+        Scope's name. Files will be dumped under the folder with this name.
     parent : Logger, optional
         Parent logger denotes, where telemetry dictionary should
         be merged up to. (the default is None, meaning logger is the root)
@@ -46,7 +46,13 @@ class Logger:
         Denotes whether specified log dir should be cleared upon start.
     """
 
-    def __init__(self, output: Path, scope='', parent=None, clear_dir=False):
+    def __init__(
+        self,
+        output: Path,
+        scope='',
+        parent: Logger = None,
+        clear_dir=False
+    ):
 
         self.OUTPUT = output
         self.__SCOPE = scope
@@ -80,7 +86,7 @@ class Logger:
             # TODO: why dumping log so implicitly?
             self.save_json(self.__logs, 'telemetry')
 
-    def __merge(self, scope, log):
+    def __merge(self, scope: str, log: Dict):
         if scope:
             self.__logs = {
                 **self.__logs,
@@ -92,7 +98,7 @@ class Logger:
                 **log
             }
 
-    def __step_counter_to_string(self):
+    def __step_counter_to_string(self) -> str:
 
         step_counter = ''
 
@@ -103,7 +109,7 @@ class Logger:
 
         return step_counter
 
-    def __get_next_key(self, key):
+    def __get_next_key(self, key: str) -> str:
         i = 1
         temp_key = key
         while temp_key in self.__logs:
@@ -122,7 +128,7 @@ class Logger:
 
         return self.__logs
 
-    def get_child(self, scope) -> Logger:
+    def get_child(self, scope: str) -> Logger:
         """
         Creates child logger, using current instance as a parent.
 
@@ -143,7 +149,7 @@ class Logger:
             parent=self
         )
 
-    def add_entry(self, key, value):
+    def add_entry(self, key: str, value: Any):
         """
         Registers new entry in the log dictionary.
 
@@ -153,35 +159,39 @@ class Logger:
             Indicates where value will be logged.
         value : str / dict
             Value to log under key.
-
         """
 
         next_key = self.__get_next_key(key)
         self.__logs[next_key] = value
 
-    def add_entries(self, entries):
+    def add_entries(self, entries: List[Tuple[str, Any]]):
         """
         Registers new entries in the log dictionary.
 
         Parameters
         ----------
-        entries : list[tuple(str, any)]
+        entries : List[Tuple[str, Any]]
             List of keys and their values,
             that will be added to the log dictionary.
-
         """
 
         for key, value in entries:
             self.add_entry(key, value)
 
-    def log_func(self, func, args: list = None, kwargs: dict = None):
+    def log_func(
+        self,
+        func: Callable,
+        args: list = None,
+        kwargs: dict = None
+    ) -> Any:
+
         """
         Wrapper for a function call. Calls function, logs
         its parameters and result in the log dictionary.
 
         Parameters
         ----------
-        func : callable
+        func : Callable
             A function to be ran.
         args : list, optional
             List of arguments, that will be applied to function call.
@@ -190,7 +200,7 @@ class Logger:
 
         Returns
         -------
-        any
+        Any
             Results from function call.
         """
 
@@ -214,15 +224,17 @@ class Logger:
 
         return result
 
-    def save_obj(self, obj, name: str, prefix_step=False):
+    def save_obj(self, obj: Any, name: str, prefix_step=False):
         """
         Dumps an object using joblib.
         File will be logged under logger's scope.
 
         Parameters
         ----------
-        obj : class
+        obj : Any
         name : str
+        prefix_step : bool, optional
+            Whether to append step prefix, by default False
         """
 
         filepath = ''
@@ -245,6 +257,8 @@ class Logger:
         figure : Figure
             Should implement `savefig(path)` interface.
         name : str
+        prefix_step : bool, optional
+            Whether to append step prefix, by default False
         """
 
         plt.figure(clear=True)
@@ -276,6 +290,10 @@ class Logger:
         ----------
         data : DataFrame
         name : str
+        prefix_step : bool, optional
+            Whether to append step prefix, by default False
+        index: bool, optional
+            Write row names (index).
         """
 
         filepath = ''
@@ -297,6 +315,8 @@ class Logger:
         ----------
         dictionary : Dict
         name : str
+        prefix_step : bool, optional
+            Whether to append step prefix, by default False
         """
 
         filepath = ''
@@ -310,7 +330,13 @@ class Logger:
         with open(path, 'w') as file:
             json.dump(dictionary, file, cls=NumpyEncoder)
 
-    def save_image(self, image, name: str, prefix_step=False, filetype='png'):
+    def save_image(
+        self,
+        image: ndarray,
+        name: str,
+        prefix_step=False,
+        filetype='png'
+    ):
         """
         Dumps image onto hard drive.
         File will be logged under logger's scope.
@@ -319,6 +345,10 @@ class Logger:
         ----------
         image : ndarray
         name : str
+        prefix_step : bool, optional
+            Whether to append step prefix, by default False
+        filetype : str, optional
+            See skimage for supported filetypes.
         """
 
         filepath = ''
@@ -349,7 +379,7 @@ class Logger:
         Parameters
         ----------
         images : List[ndarray]
-        name : str            
+        name : str
         prefix_step : bool, optional
             Whether to append step prefix, by default False
         duration : int, optional
