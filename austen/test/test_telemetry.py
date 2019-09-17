@@ -106,6 +106,19 @@ def test_save_csv(logs_dir: Path, people: pd.DataFrame):
         assert people_path.exists()
 
 
+def test_save_json(logs_dir: Path):
+    with Logger(logs_dir) as logger:
+
+        dictionary = {
+            'foo': 'bar'
+        }
+
+        logger.save_json(dictionary, 'dictionary')
+
+        path = logs_dir.joinpath('dictionary.json')
+        assert path.exists()
+
+
 def test_save_image(logs_dir: Path, astronaut: np.ndarray):
     with Logger(logs_dir) as logger:
         logger.save_image(astronaut, 'astronaut')

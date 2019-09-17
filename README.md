@@ -8,10 +8,12 @@ Perfect for printing algorithms. Dumps into `json` file.
 Core idea behind `Austen` is to have algorithm call stack logged with exact arguments.These are stored in a dictionary and dumped into `json`.
 Additionally `Austen` handles dumps of some additional file types. These include:
 
+- objects (using `joblib`)
 - plots
 - sheets
+- dictionaries
 - images
-- objects (using `joblib`)
+- GIFs
 
 All files will be dumped in a folder structure, that corresponds to your algorithm (folder per branch).
 
@@ -80,6 +82,16 @@ def foo(logger:Logger, x, y):
 
 Now let's see how we can dump files.
 
+#### Objects
+
+```py
+logger.save_obj(logger, name='logger')
+```
+
+- `name` denotes name of your file. File extensions are handled automatically.
+
+Objects are serialized using `joblib`.
+
 #### Plots, figures
 
 ```py
@@ -88,8 +100,6 @@ logger.save_fig(figure, name='foo')
 
 Your figure should implement `savefig` interfaces from `matplotlib`.
 It's de facto standard for plots in Python.
-
-- `name` - denotes name of your file. File extensions are handled automatically.
 
 ```shell
 logs/foo.png
@@ -108,6 +118,14 @@ I guess everyone's just using `pandas` nowadays to handle sheets.
 
 ```shell
 logs/foo.csv
+```
+
+#### Dictionaries
+
+Dictionaries are saved in `json` format.
+
+```py
+logger.save_json(dictionary, name='dictionary')
 ```
 
 #### Images
@@ -137,13 +155,13 @@ logs/01_astronaut.png
 logs/02_coffee.png
 ```
 
-#### Objects
+#### GIFs
 
 ```py
-logger.save_obj(logger, name='logger')
+logger.save_gif(images, 'your-sequence')
 ```
 
-Objects are serialized using `joblib`.
+GIFs are dumped using `PIL`.
 
 ### Time to get a bit crazy (nesting)
 
