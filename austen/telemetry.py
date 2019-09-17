@@ -14,12 +14,14 @@ from datetime import datetime
 from pathlib import Path
 from shutil import rmtree
 from timeit import default_timer as timer
-from typing import Dict
+from typing import Dict, List
 
 import joblib
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
+from numpy import ndarray
 from pandas import DataFrame
+from PIL import Image
 from skimage import img_as_ubyte
 from skimage.io import imsave
 
@@ -331,3 +333,52 @@ class Logger:
 
         image = img_as_ubyte(image)
         imsave(path, image)
+
+    def save_gif(
+        self,
+        images: List[ndarray],
+        name: str,
+        prefix_step=False,
+        duration=100,
+        loop=0
+    ):
+        """
+        Dumps sequence of images onto hard drive as gif.
+        File will be logged under logger's scope.
+
+        Parameters
+        ----------
+        images : List[ndarray]
+        name : str            
+        prefix_step : bool, optional
+            Whether to append step prefix, by default False
+        duration : int, optional
+            Duration of a single frame in gif, by default 100 [ms]
+        loop : int, optional
+            How many times gif should be looped, by default 0, which means
+            looping forever.
+        """
+
+        filepath = ''
+
+        if prefix_step:
+            filepath += self.__step_counter_to_string() + '-'
+
+        filepath += name
+        filepath += '.gif'
+
+        path = self.OUTPUT.joinpath(filepath)
+
+        images = [img_as_ubyte(image) for image in images]
+        images = [Image.fromarray(image) for image in images]
+
+        gif = images[0]
+
+        gif.save(
+            path,
+            format='GIF',
+            save_all=True,
+            append_images=images[1:],
+            duration=duration,
+            loop=loop
+        )
