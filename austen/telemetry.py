@@ -280,6 +280,7 @@ class Logger:
         data: DataFrame,
         name: str,
         prefix_step=False,
+        header=True,
         index=True
     ):
         """
@@ -292,6 +293,8 @@ class Logger:
         name : str
         prefix_step : bool, optional
             Whether to append step prefix, by default False
+        header: bool, optional
+            Write column names (header).
         index: bool, optional
             Write row names (index).
         """
@@ -304,7 +307,7 @@ class Logger:
         filepath += name + '.csv'
         path = self.OUTPUT.joinpath(filepath)
 
-        data.to_csv(path, index=index)
+        data.to_csv(path, header=header, index=index)
 
     def save_json(self, dictionary: Dict, name: str, prefix_step=False):
         """
