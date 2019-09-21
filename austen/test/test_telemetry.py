@@ -91,7 +91,7 @@ def test_save_fig(logs_dir: Path, people: pd.DataFrame):
 
         plt.title('Height')
 
-        logger.save_fig(figure, 'height')
+        logger.save_fig(figure, 'height', dpi=200)
         plt.close('all')
 
         plot_path = logs_dir.joinpath('height.png')

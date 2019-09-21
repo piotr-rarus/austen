@@ -247,7 +247,7 @@ class Logger:
 
         joblib.dump(obj, path)
 
-    def save_fig(self, figure: Figure, name: str, prefix_step=False):
+    def save_fig(self, figure: Figure, name: str, prefix_step=False, dpi=100):
         """
         Dumps figure.
         File will be logged under logger's scope.
@@ -259,6 +259,8 @@ class Logger:
         name : str
         prefix_step : bool, optional
             Whether to append step prefix, by default False
+        dpi : int, optional
+            Figure dump quality , by default 100
         """
 
         plt.figure(clear=True)
@@ -271,7 +273,7 @@ class Logger:
         filepath += name + '.png'
         path = self.OUTPUT.joinpath(filepath)
 
-        figure.savefig(path)
+        figure.savefig(path, dpi=dpi)
 
         plt.close('all')
 
